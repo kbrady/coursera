@@ -1,14 +1,14 @@
 #-*- coding: utf-8 -*-
 #!/usr/bin/python
 #---------------------------------------
-# www-coursera-downloader.py
+# coursera.py
 # (c) Jansen A. Simanullang
 # Automated Coursera Downloader
 # START: 28.03.2016 18:17
 # LAST: 03.04.2016 17:12
 #---------------------------------------
 # usage:
-# python www-coursera-downloader.py
+# python coursera.py
 #
 # changes:
 # 01.04.2016: Courses list downloaded
