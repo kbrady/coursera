@@ -358,97 +358,47 @@ def getLessons(email, password, fullCourseName):
 		
 		for i in range (0, len(sections)):
 		
-			try:
-				sectionTitle = sections[i].find_by_css('div > h5.tab-headline > span').text
-				print "section", i+1, ":", sectionTitle , "\n" 
-				lessons = sections[i].find_by_css('div.rc-ModuleLessons > div.od-section > div.rc-LessonCollectionBody > div.card-rich-interaction.od-lesson-collection-container > div.od-lesson-collection-element > div.rc-NamedItemList')
-				lectureLessons = []
-				for lesson in lessons:
-					items = lesson.find_by_css('span.rc-ItemHonorsWrapper.nostyle')
-					for item in items:
-						if 'lecture' in item.find_by_css('a')['href']:
-							lectureLessons.append(lesson)
-							break
+			sectionTitle = sections[i].find_by_css('div > h5.tab-headline > span').text
+			print "section", i+1, ":", sectionTitle , "\n" 
+			lessons = sections[i].find_by_css('div.rc-ModuleLessons > div.od-section > div.rc-LessonCollectionBody > div.card-rich-interaction.od-lesson-collection-container > div.od-lesson-collection-element > div.rc-NamedItemList')
+			lectureLessons = []
+			for lesson in lessons:
+				items = lesson.find_by_css('span.rc-ItemHonorsWrapper.nostyle')
+				for item in items:
+					if 'lecture' in item.find_by_css('a')['href']:
+						lectureLessons.append(lesson)
+						break
 						
-				print len(lectureLessons) , "lesson(s) available\n"
+			print len(lectureLessons) , "lesson(s) available\n"
 				
-				for j in range(0, len(lectureLessons)):
-					lessonTitle = lectureLessons[j].find_by_css('div.horizontal-box.named-item-list-title > h4').text
-					print "lesson" , j+1, ":", lessonTitle
-					lectures = []
-					items = lectureLessons[j].find_by_css('span.rc-ItemHonorsWrapper.nostyle')
-					for item in items:
-						if 'lecture' in item.find_by_css('a')['href']:
-							lectures.append(item)
+			for j in range(0, len(lectureLessons)):
+				lessonTitle = lectureLessons[j].find_by_css('div.horizontal-box.named-item-list-title > h4').text
+				print "lesson" , j+1, ":", lessonTitle
+				lectures = []
+				items = lectureLessons[j].find_by_css('span.rc-ItemHonorsWrapper.nostyle')
+				for item in items:
+					if 'lecture' in item.find_by_css('a')['href']:
+						lectures.append(item)
 							
-					print len(lectures), "lecture(s) available\n"
-					for w in range(0,len(lectures)):
-						h5_item = lectures[w].find_by_css('h5')
-						a_item = lectures[w].find_by_css('a')
+				print len(lectures), "lecture(s) available\n"
+				for w in range(0,len(lectures)):
+					h5_item = lectures[w].find_by_css('h5')
+					a_item = lectures[w].find_by_css('a')
 				
-						url = a_item['href']
-						lectureTitle = h5_item.text
+					url = a_item['href']
+					lectureTitle = h5_item.text
 					
-						print w+1, "-", lectureTitle, "\n", url
+					print w+1, "-", lectureTitle, "\n", url
 						
-						arrWeeks.append("week" + str(k+1).zfill(2))
-						arrSectionTitle.append(str(i+1).zfill(2) + "-" + sectionTitle)
-						arrLessonTitle.append(str(j+1).zfill(2) + "-" + lessonTitle)
-						arrLectureTitle.append(str(w+1).zfill(2) + "-" + lectureTitle)
-						arrLectureURL.append(url)
+					arrWeeks.append("week" + str(k+1).zfill(2))
+					arrSectionTitle.append(str(i+1).zfill(2) + "-" + sectionTitle)
+					arrLessonTitle.append(str(j+1).zfill(2) + "-" + lessonTitle)
+					arrLectureTitle.append(str(w+1).zfill(2) + "-" + lectureTitle)
+					arrLectureURL.append(url)
 									
-				i += 1
 				
-				print "\n"
 				
-	
-			except:
-			
-				browser.reload()
-				
-				time.sleep(5)
-				
-				#print k+1, "-", i+1, items[i].find_by_css('h4').text.upper(), "\n"
-			
-				sectionTitle = sections[i].find_by_css('div > h5.tab-headline > span').text
-				print "section", i+1, ":",  sectionTitle , "\n" 
-				lessons = sections[i].find_by_css('div.rc-ModuleLessons > div.od-section > div.rc-LessonCollectionBody > div.card-rich-interaction.od-lesson-collection-container > div.od-lesson-collection-element > div.rc-NamedItemList')
-				lectureLessons = []
-				for lesson in lessons:
-					items = lesson.find_by_css('span.rc-ItemHonorsWrapper.nostyle')
-					for item in items:
-						if 'lecture' in item.find_by_css('a')['href']:
-							lectureLessons.append(lesson)
-							break
-						
-				print len(lectureLessons) , "lesson(s) available\n"
-				
-				for j in range(0, len(lectureLessons)):
-					lessonTitle = lectureLessons[j].find_by_css('div.horizontal-box.named-item-list-title > h4').text
-					print "\nlesson " , j+1, ": ", lessonTitle
-					lectures = []
-					items = lectureLessons[j].find_by_css('span.rc-ItemHonorsWrapper.nostyle')
-					for item in items:
-						if 'lecture' in item.find_by_css('a')['href']:
-							lectures.append(item)
-							
-					print len(lectures), "lecture(s) available\n"
-					for w in range(0,len(lectures)):
-						h5_item = lectures[w].find_by_css('h5')
-						a_item = lectures[w].find_by_css('a')
-				
-						url = a_item['href']
-						lectureTitle = h5_item.text
-					
-						print w+1, "-", lectureTitle, "\n", url
-						
-						arrWeeks.append("week" + str(k+1).zfill(2))
-						arrSectionTitle.append(str(i+1).zfill(2) + "-" + sectionTitle)
-						arrLessonTitle.append(str(j+1).zfill(2) + "-" + lessonTitle)
-						arrLectureTitle.append(str(w+1).zfill(2) + "-" + lectureTitle)
-						arrLectureURL.append(url)
-					
-				print "\n"
+			print "\n"
 		
 		time.sleep(5)
 		
@@ -665,11 +615,13 @@ def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLect
 					
 						checkResult = True or checkResult
 					
-						if (os.path.getsize(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file) == 0):
+						if os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file):
 						
-							#print "file found with size 0"
+							if (os.path.getsize(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file) == 0):
+						
+								#print "file found with size 0"
 				
-							checkResult = True and checkResult
+								checkResult = True and checkResult
 					else:
 					
 						checkResult = False and checkResult
@@ -758,55 +710,57 @@ def getFile(arrWeeks, arrSectionTitle, arrLessonTitle, strLectureDownloadURL, ar
 	if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle):
 		
 		os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle)
-		
-	if not os.path.isfile(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + fileName):
 	
-		os.chdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle)
+	if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + fileName):
 		
-		f = open(fileName, 'wb')
-
-		u = urllib2.urlopen(strLectureDownloadURL)
-
-		meta = u.info()
-			
-		if "Content-Length" in meta:
-
-			fileSize = int(meta.getheaders("Content-Length")[0])
-
-			print "Downloading: %s Bytes: %s" % (fileName, fileSize)
-				
-			blockSize = 8192
-
-			while True:
-
-				buffer = u.read(blockSize)
-					
-				if not buffer:
-					
-					break
-
-				downloadedSize += len(buffer)
-					
-				f.write(buffer)
-					
-				status = r"%10d  [%3.2f%%]" % (downloadedSize, downloadedSize * 100. / fileSize)
-					
-				status = status + chr(8)*(len(status)+1)
-					
-				print status,
-					
-		else:
-				
-			print "Downloading: unknown bytes..."
-											
-			f.write(u.read())
-
-		f.close()
-				
-		print(fileName + " downloaded.\n")
-			
-		time.sleep(.3)
+		if not os.path.isfile(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + fileName):
 		
+			os.chdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle)
+			
+			f = open(fileName, 'wb')
+	
+			u = urllib2.urlopen(strLectureDownloadURL)
+	
+			meta = u.info()
+				
+			if "Content-Length" in meta:
+	
+				fileSize = int(meta.getheaders("Content-Length")[0])
+	
+				print "Downloading: %s Bytes: %s" % (fileName, fileSize)
+					
+				blockSize = 8192
+	
+				while True:
+	
+					buffer = u.read(blockSize)
+						
+					if not buffer:
+						
+						break
+	
+					downloadedSize += len(buffer)
+						
+					f.write(buffer)
+						
+					status = r"%10d  [%3.2f%%]" % (downloadedSize, downloadedSize * 100. / fileSize)
+						
+					status = status + chr(8)*(len(status)+1)
+						
+					print status,
+						
+			else:
+					
+				print "Downloading: unknown bytes..."
+												
+				f.write(u.read())
+	
+			f.close()
+					
+			print(fileName + " downloaded.\n")
+				
+			time.sleep(.3)
+			
 	else:
 	
 		print fileName +" already exists.\n"
