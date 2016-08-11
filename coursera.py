@@ -569,8 +569,6 @@ def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLect
 	
 	exts = ['.mp4','.vtt','.txt']
 		
-	checkResult = False
-		
 	print 'Checking existing downloads for: "' + strLectureTitle + '"'
 		
 	if not os.path.exists(scriptRoot + fullCourseName):
