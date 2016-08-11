@@ -557,8 +557,6 @@ def fetchVideo(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, arrLe
 
 def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLectureTitle, fullCourseName):
 
-	words = ['Quiz:', 'Reading:', 'Overview']
-		
 	checkResult = False
 	
 	fullCourseName = cleanTitle(fullCourseName)
@@ -569,68 +567,60 @@ def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLect
 	
 	arrLectureTitle = cleanTitle(arrLectureTitle)
 	
-	if any([word in strLectureTitle for word in words]):
-	
-		checkResult = True
+	exts = ['.mp4','.vtt','.txt']
 		
-	else:
-	
-		exts = ['.mp4','.vtt','.txt']
+	checkResult = False
 		
-		checkResult = False
+	print 'Checking existing downloads for: "' + strLectureTitle + '"'
 		
-		print 'Checking existing downloads for: "' + strLectureTitle + '"'
+	if not os.path.exists(scriptRoot + fullCourseName):
 		
-		if not os.path.exists(scriptRoot + fullCourseName):
-		
-			os.mkdir(scriptRoot + fullCourseName)	
+		os.mkdir(scriptRoot + fullCourseName)	
 
-		if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks):
+	if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks):
 		
-			os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks)
+		os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks)
 		
-		if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle):
+	if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle):
 		
-			os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle)
+		os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle)
 			
-		if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle):
+	if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle):
 		
-			os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle)
+		os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle)
 			
-		if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle):
+	if not os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle):
 		
-			os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle)
+		os.mkdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle)
 	
-		files = os.listdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep)
+	files = os.listdir(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep)
 				
-		for file in files:
+	for file in files:
 			
-			if any([cleanTitle(strLectureTitle) in file for file in files]):
-			
-				checkResult = True or checkResult
+		if any([cleanTitle(strLectureTitle) in file for file in files]):
+		
+			checkResult = True or checkResult
 				
-				for ext in exts:
+			for ext in exts:
 				
-					if ext in file:
+				if ext in file:
 					
-						checkResult = True or checkResult
+					checkResult = True or checkResult
 					
-						if os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file):
+					if os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file):
 						
-							if (os.path.getsize(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file) == 0):
-						
-								#print "file found with size 0"
+						if (os.path.getsize(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file) == 0):
+					
+							#print "file found with size 0"
 				
-								checkResult = True and checkResult
-					else:
+							checkResult = True and checkResult
+				else:
 					
-						checkResult = False and checkResult
+					checkResult = False and checkResult
 					
-			#print file, checkResult
+		#print file, checkResult
 				
 	return checkResult
-
-			
 	
 def readCSV(strNamaFile):
 
