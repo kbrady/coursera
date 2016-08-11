@@ -163,13 +163,8 @@ def getUserPass(strPasswordFile):
 
 
 def getCourses(email, password):
-	#--------------------------------
-	# getLessons(email, password, fullCourseName)
-	#
 	
 	waiting_time = 0
-	arrLessonURL = []
-	arrLessonTitle = []
 	print "Getting courses list..."
 	firstBrowser = 'phantomjs'
 	secondBrowser = 'chrome'
@@ -204,7 +199,6 @@ def getCourses(email, password):
 	button = browser.find_by_text('Log In')[-1]
 	button.click()
 	print "Welcome to Coursera!\n"
-	time.sleep(15)
 	
 	while ('My Courses' not in browser.html):
 		waiting_time = waiting_time +1
@@ -238,7 +232,6 @@ def getCourses(email, password):
 	
 	try:
 		print "\nClosing connection..."
-		time.sleep(15)
 		browser.driver.close()
 	except:
 		
@@ -247,9 +240,6 @@ def getCourses(email, password):
 	return fullCourseName	
 			
 def getLessons(email, password, fullCourseName):
-	#--------------------------------
-	# getLessons(email, password, fullCourseName)
-	#
 	
 	firstBrowser = 'phantomjs'
 	secondBrowser = 'chrome'
@@ -275,7 +265,6 @@ def getLessons(email, password, fullCourseName):
 	arrLectureTitle = []
 	arrLectureURL = []
 
-	
 	browser.driver.maximize_window()
 
 	browser.visit('https://www.coursera.org/?authMode=login')
@@ -290,53 +279,26 @@ def getLessons(email, password, fullCourseName):
 	while(fullCourseName not in browser.html):
 		
 		sys.stdout.write('waiting for "' + fullCourseName[:48] + '" to appear...\r')
-		#sys.stdout.flush()
 		
 	courses = browser.find_by_css('div.cozy.card-rich-interaction.c-dashboard-membership')
-	#sys.stdout.write('\n'+str(len(courses)) + ' lectures available\r\n\n')
 	
-	i = 0
-	
-	try:
-	
-		while(i < len(courses)):
-		
-			try:
+	for course in courses:
 			
-				while(fullCourseName not in courses[i].text.encode('utf-8')):
-				
-					pass
-					i += 1
+		if fullCourseName in course.text.encode('utf-8'):
+							
+			course.find_by_tag('a')[-1].click()
 					
-				courses = browser.find_by_css('div.cozy.card-rich-interaction.c-dashboard-membership')[i].find_by_tag('a')[-1].click()
-				
-			except: # on StaleElementReferenceException
+			while(fullCourseName not in browser.html):
 			
-				browser.reload()
-				
-				while(fullCourseName not in browser.html):
-			
-					sys.stdout.write('waiting for "' + fullCourseName + '" to appear...\r')
-					#sys.stdout.flush()
-					
-				courses = browser.find_by_css('div.cozy.card-rich-interaction.c-dashboard-membership')[i].find_by_tag('a')[-1].click()
-				
-	except:
-	
-		pass
-		
+				sys.stdout.write('waiting for "' + fullCourseName + '" to appear...\r')
+
+			break
+							
 	welcomepage = browser.url
-	
-	while(fullCourseName not in browser.html):
-			
-		sys.stdout.write('waiting for "' + fullCourseName + '" to appear...\r')
-		sys.stdout.flush()
 		
 	weeks = browser.find_by_css('div.rc-WeekRow')
 		
 	sys.stdout.write('\n'+str(len(weeks)) + " week(s) lecture\r\n")
-
-	#sys.stdout.flush()
 	
 	for k in range(0, len(weeks)):
 	
@@ -345,11 +307,7 @@ def getLessons(email, password, fullCourseName):
 		print "----------------- WEEK " + str(k+1) + "-----------------\n"
 	
 		browser.visit(url)
-		
-		time.sleep(5)
-		
-		#selector = '#rendered-content > div > div.rc-OndemandApp > div.rc-HomeLayout > div.rc-HomeLayoutBody.horizontal-box > div.od-contents > main > div.rc-PeriodPage > div.horizontal-box.wrap > div > section > div.rc-LessonList.card-rich-interaction.od-section > div > div'
-		
+				
 		selector = '#rendered-content > div > div.rc-OndemandApp > div > div.rc-HomeLayout > div.rc-HomeLayoutBody > main.od-contents.vertical-box > div.c-body > div.rc-PeriodPage > div.horizontal-box.wrap > div.flex-1 > section.rc-ModuleSection.od-section' # '> div.rc-ModuleLessons > div.od-section > div.rc-LessonCollectionBody > div.card-rich-interaction.od-lesson-collection-container > div.od-lesson-collection-element > div.rc-NamedItemList > span.rc-ItemHonorsWrapper.nostyle'
 		
 		sections = browser.find_by_css(selector)
@@ -369,11 +327,11 @@ def getLessons(email, password, fullCourseName):
 						lectureLessons.append(lesson)
 						break
 						
-			print len(lectureLessons) , "lesson(s) available\n"
+			print len(lectureLessons) , "lesson(s) available\n\n"
 				
 			for j in range(0, len(lectureLessons)):
 				lessonTitle = lectureLessons[j].find_by_css('div.horizontal-box.named-item-list-title > h4').text
-				print "lesson" , j+1, ":", lessonTitle
+				print "lesson" , j+1, ":", lessonTitle, "\n"
 				lectures = []
 				items = lectureLessons[j].find_by_css('span.rc-ItemHonorsWrapper.nostyle')
 				for item in items:
@@ -395,12 +353,8 @@ def getLessons(email, password, fullCourseName):
 					arrLessonTitle.append(str(j+1).zfill(2) + "-" + lessonTitle)
 					arrLectureTitle.append(str(w+1).zfill(2) + "-" + lectureTitle)
 					arrLectureURL.append(url)
-									
-				
-				
+										
 			print "\n"
-		
-		time.sleep(5)
 		
 	print len(arrLessonTitle),"lectures", len(arrLectureURL), "urls"
 		
@@ -435,9 +389,9 @@ def createCSV(fullCourseName):
 	
 	for i in range (0, len(arrLectureTitle)):
 	
-		line = '"'+ arrWeeks[i] + '","' + arrSectionTitle[i] + '","' +  arrLessonTitle[i] + '","' + arrLectureTitle[i]+'","' + arrLectureURL[i] +'"\n'
+		line = '"'+ arrWeeks[i] + '","' + arrSectionTitle[i] + '","' +  arrLessonTitle[i] + '","' + arrLectureTitle[i] + '","' + arrLectureURL[i] + '"\n'
 		
-		f.write(line)
+		f.write(line.encode("utf-8"))
 		
 	f.close()
 	
@@ -451,7 +405,7 @@ def cleanTitle(strText):
 	strText = strText.replace("?","")
 	
 	strText = strText.replace("  "," ")
-	
+
 	return strText
 	
 	
@@ -475,24 +429,12 @@ def fetchVideo(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, arrLe
 		except:
 			browser = Browser()
 			print "Using Firefox Web Driver...\n"
-	
-	# if firstBrowser == 'chrome':
-	
-		# if disableImage == True:
-		
-			# browser.driver.close()
-			# options = webdriver.ChromeOptions()
-			# options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
-			# options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images":2})
-			# browser.driver = webdriver.Chrome(chrome_options=options)
 		
 	browser.driver.maximize_window()
 
 	browser.visit('https://www.coursera.org/?authMode=login')
-	time.sleep(5)
 
 	browser.fill('email', email)
-	time.sleep(.5)
 	browser.fill('password', password)
 	print "Logging (back) in...\n"
 
@@ -514,39 +456,25 @@ def fetchVideo(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, arrLe
 			
 				waiting_time = waiting_time + 1
 				sys.stdout.write('waiting for "' + strLectureTitle[:48] + '" to appear...' + str(waiting_time) + ' second(s)\r')
-				sys.stdout.flush()
 				time.sleep(1)
 				if waiting_time == 60:
 					print('Time out. Skipped.')
 					break
-					
-			try:
-			
-				#selector = '#rendered-content > div > div.rc-OndemandApp > div.rc-ItemLayout > div:nth-child(3) > div > div > div > div.horizontal-box.week-drawer-container > div.content-container.flex-1 > div.extras.horizontal-box.align-items-top.wrap > div.rc-LectureResources.styleguide > ul > li'
+						
+			selector = '#rendered-content > div > div.rc-OndemandApp > div > div.rc-ItemLayout > div > div.rc-VideoItem > div.horizontal-box > div.rc-ItemNavigation > div.horizontal-box.week-drawer-container > div.flex-1 > div.content-container > div.extras.horizontal-box.align-items-top.wrap > div.rc-LectureResources.styleguide.flex-1 > ul.resources-list.card-rich-interaction > li'
 				
-				selector = '#rendered-content > div > div.rc-OndemandApp > div > div.rc-ItemLayout > div > div.rc-VideoItem > div.horizontal-box > div.rc-ItemNavigation > div.horizontal-box.week-drawer-container > div.flex-1 > div.content-container > div.extras.horizontal-box.align-items-top.wrap > div.rc-LectureResources.styleguide.flex-1 > ul.resources-list.card-rich-interaction > li'
+			courses = browser.find_by_css(selector)
 				
-				courses = browser.find_by_css(selector)
-				
-				for course in courses:
-					strLectureDownloadURL = course.find_by_css('a')['href']
-					print strLectureDownloadURL, "\n"
-					fileName = cleanTitle(arrLectureTitle[i])
-					print fileName, "\n"
-					try:			
-
-						while(getFile(arrWeeks[i], arrSectionTitle[i], arrLessonTitle[i], strLectureDownloadURL, fileName, fullCourseName)):
-												
-							break
+			for course in courses:
+				strLectureDownloadURL = course.find_by_css('a')['href']
+				print strLectureDownloadURL, "\n"
+				fileName = cleanTitle(arrLectureTitle[i])
+				print fileName, "\n"
 							
-					except:
-						print "download failed...\n"
-				
-			except:
-			
-				print "No video found.\n"
-				pass
-				
+				while(getFile(arrWeeks[i], arrSectionTitle[i], arrLessonTitle[i], strLectureDownloadURL, fileName, fullCourseName)):
+												
+					break
+											
 		else:
 		
 			pass
@@ -554,9 +482,8 @@ def fetchVideo(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, arrLe
 	browser.driver.close()
 
 
-
 def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLectureTitle, fullCourseName):
-
+		
 	checkResult = False
 	
 	fullCourseName = cleanTitle(fullCourseName)
@@ -596,7 +523,7 @@ def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLect
 	for file in files:
 			
 		if any([cleanTitle(strLectureTitle) in file for file in files]):
-		
+			
 			checkResult = True or checkResult
 				
 			for ext in exts:
@@ -608,17 +535,13 @@ def precheck(arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, strLect
 					if os.path.exists(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file):
 						
 						if (os.path.getsize(scriptRoot + fullCourseName + os.sep + arrWeeks + os.sep + arrSectionTitle + os.sep + arrLessonTitle + os.sep + arrLectureTitle + os.sep + file) == 0):
-					
-							#print "file found with size 0"
 				
 							checkResult = True and checkResult
 				else:
 					
 					checkResult = False and checkResult
-					
-		#print file, checkResult
 				
-	return checkResult
+	return checkResult		
 	
 def readCSV(strNamaFile):
 
@@ -632,8 +555,9 @@ def readCSV(strNamaFile):
 	
 	for line in f.readlines():
 	
+		line = line.decode("utf-8")
 		week = re.findall('"week[0-9]+?"', line)[0].replace('"','')
-		sectionTitle = re.findall('"[0-9]+-.*?"', line)[0].replace('"','')
+		sectionTitle = re.findall('"[0-9]+-.*?"', line)[0].replace('"',"")
 		lessonTitle = re.findall('"[0-9]+-.*?"', line)[1].replace('"','')
 		lectureTitle = re.findall('"[0-9]+-.*?"', line)[2].replace('"','')
 		lectureURL = re.findall('"http.*?"', line)[0].replace('"','')
@@ -643,11 +567,7 @@ def readCSV(strNamaFile):
 		arrLessonTitle.append(lessonTitle)
 		arrLectureTitle.append(lectureTitle)
 		arrLectureURL.append(lectureURL)
-		#print strLessonTitle,"\n", strLessonURL
 		
-	# "[0-9]+" --> regex to grab the number cell
-	# "[0-9]+-.*?" --> regex to grab the title cell
-	# "http.*?" ---> regex to grab the url cell
 	f.close()
 	return arrWeeks, arrSectionTitle, arrLessonTitle, arrLectureTitle, arrLectureURL
 	
@@ -722,10 +642,13 @@ def getFile(arrWeeks, arrSectionTitle, arrLessonTitle, strLectureDownloadURL, ar
 				while True:
 	
 					buffer = u.read(blockSize)
+
+					i = 1
 						
-					if not buffer:
+					while(not buffer):
 						
-						break
+						time.sleep(i)
+						buffer = u.read(blockSize)
 	
 					downloadedSize += len(buffer)
 						
@@ -746,8 +669,6 @@ def getFile(arrWeeks, arrSectionTitle, arrLessonTitle, strLectureDownloadURL, ar
 			f.close()
 					
 			print(fileName + " downloaded.\n")
-				
-			time.sleep(.3)
 			
 	else:
 	
