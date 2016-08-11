@@ -557,7 +557,7 @@ def readCSV(strNamaFile):
 	
 		line = line.decode("utf-8")
 		week = re.findall('"week[0-9]+?"', line)[0].replace('"','')
-		sectionTitle = re.findall('"[0-9]+-.*?"', line)[0].replace('"',"")
+		sectionTitle = re.findall('"[0-9]+-.*?"', line)[0].replace('"','')
 		lessonTitle = re.findall('"[0-9]+-.*?"', line)[1].replace('"','')
 		lectureTitle = re.findall('"[0-9]+-.*?"', line)[2].replace('"','')
 		lectureURL = re.findall('"http.*?"', line)[0].replace('"','')
